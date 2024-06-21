@@ -3,15 +3,19 @@ import websocket from "@fastify/websocket";
 const server = fastify();
 
 server.register(websocket);
-
+const clients = new Set<any>();
 server.register(async function (server) {
   // Define websocket routes
   server.get("/", { websocket: true }, (socket, req) => {
+    clients.add(socket);
     socket.on("message", (message) => {
-      console.log(message.toString());
-      socket.send("hi from server" + new Date());
+      clients.forEach((client) => {
+        // Send the message to the receiveing clients, omitting the sender
+        if (client !== socket) {
+          client.send(message.toString());
+        }
+      });
     });
-    socket.send("The conversation started!");
   });
 });
 
