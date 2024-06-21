@@ -45,7 +45,9 @@ export default function Home() {
               }`}
             >
               <div
-                className="chat-bubble"
+                className={`chat-bubble ${
+                  messageObj.isReceived ? "" : "chat-bubble-primary"
+                }`}
                 key={messageObj.message + (messageObj.message.length - 3)}
               >
                 {messageObj.message}
