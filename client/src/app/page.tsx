@@ -26,7 +26,7 @@ export default function Home() {
         { message: lastMessage.data, isReceived: true },
       ]);
     }
-  }, [lastMessage]);
+  }, [lastMessage, messages]);
 
   const sendMessageHandler = () => {
     sendMessage(message);
@@ -43,12 +43,12 @@ export default function Home() {
               className={`chat ${
                 messageObj.isReceived ? "chat-start" : "chat-end"
               }`}
+              key={messageObj.message + (messageObj.message.length - 3)}
             >
               <div
                 className={`chat-bubble ${
                   messageObj.isReceived ? "" : "chat-bubble-primary"
                 }`}
-                key={messageObj.message + (messageObj.message.length - 3)}
               >
                 {messageObj.message}
               </div>

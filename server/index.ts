@@ -19,7 +19,7 @@ server.register(async function (server) {
   });
 });
 
-server.listen({ port: 8080 }, (err, address) => {
+server.listen({ port: 10000 }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
