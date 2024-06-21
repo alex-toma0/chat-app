@@ -1,16 +1,24 @@
-import fastify from "fastify";
+import fastify, { FastifyRequest } from "fastify";
 import websocket from "@fastify/websocket";
-const server = fastify();
 
+const server = fastify();
 server.register(websocket);
-const clients = new Set<any>();
+const connectedClients = new Map();
 server.register(async function (server) {
   // Define websocket routes
   server.get("/", { websocket: true }, (socket, req) => {
-    clients.add(socket);
+    // Defines a set of users connected to a certain roomId
+    console.log(req.originalUrl);
+    const params = new URLSearchParams(req.originalUrl);
+    const roomId = params.get("/?roomId");
+
+    if (!connectedClients.has(roomId)) {
+      connectedClients.set(roomId, new Set());
+    }
+    connectedClients.get(roomId).add(socket);
     socket.on("message", (message) => {
-      clients.forEach((client) => {
-        // Send the message to the receiveing clients, omitting the sender
+      // Sends message to all clients but the sender
+      connectedClients.get(roomId).forEach((client: any) => {
         if (client !== socket) {
           client.send(message.toString());
         }
