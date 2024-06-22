@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import Chat from "@/app/components/Chat";
+import { v4 as uuidv4 } from "uuid";
+
 export interface Message {
   message: string;
   isReceived: boolean;
@@ -15,7 +17,8 @@ export default function Page({
 }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]); // Combined array
-
+  const clientId = localStorage.getItem("clientId") || uuidv4();
+  localStorage.setItem("clientId", clientId);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     `ws://${process.env.NEXT_PUBLIC_TEST_API}/`,
     {
@@ -24,7 +27,9 @@ export default function Page({
       },
       queryParams: {
         roomId: params.roomId,
+        clientId: clientId,
       },
+      retryOnError: true,
     }
   );
 
@@ -57,9 +62,13 @@ export default function Page({
             sendMessageHandler();
           }
         }}
-        value={message}
+        value={message.trimStart()}
       ></textarea>
-      <button className="btn btn-primary max-w-sm" onClick={sendMessageHandler}>
+      <button
+        className="btn btn-primary max-w-sm"
+        onClick={sendMessageHandler}
+        disabled={readyState !== ReadyState.OPEN}
+      >
         Send
       </button>
     </div>

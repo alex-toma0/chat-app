@@ -8,19 +8,29 @@ server.register(async function (server) {
   // Define websocket routes
   server.get("/", { websocket: true }, (socket, req) => {
     // Defines a set of users connected to a certain roomId
-    console.log(req.originalUrl);
     const params = new URLSearchParams(req.originalUrl);
     const roomId = params.get("/?roomId");
-
+    const clientId = params.get("clientId");
     if (!connectedClients.has(roomId)) {
-      connectedClients.set(roomId, new Set());
+      connectedClients.set(roomId, {
+        occupancy: 0,
+        clients: new Map(),
+      });
     }
-    connectedClients.get(roomId).add(socket);
+    const room = connectedClients.get(roomId);
+    if (room.occupancy >= 2 && !room.clients.has(clientId)) {
+      // Reject connection if room is full, and a new client is trying to join it
+      socket.send("Server message: room is full!");
+      socket.close();
+      return;
+    }
+    room.clients.set(clientId, socket);
+    room.occupancy++;
     socket.on("message", (message) => {
       // Sends message to all clients but the sender
-      connectedClients.get(roomId).forEach((client: any) => {
-        if (client !== socket) {
-          client.send(message.toString());
+      room.clients.forEach((clientSocket: any, clientId: any) => {
+        if (clientSocket !== socket) {
+          clientSocket.send(message.toString());
         }
       });
     });

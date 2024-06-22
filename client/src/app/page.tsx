@@ -21,9 +21,12 @@ export default function Page() {
         Create room
       </button>
       <dialog ref={modalRef} className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Your room has been created!</h3>
-          <Link href={`/room/${roomId}`}>{`/room/${roomId}`}</Link>
+        <div className="modal-box flex flex-col">
+          <h3 className="font-bold text-lg">Your room has been created! </h3>
+          <span>Share the room link and start chatting!</span>
+          <Link href={`/room/${roomId}`}>
+            <span className="link text-warning">{`localhost:3000/room/${roomId}`}</span>
+          </Link>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
