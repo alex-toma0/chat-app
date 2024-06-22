@@ -20,7 +20,7 @@ export default function Page({
   const clientId = localStorage.getItem("clientId") || uuidv4();
   localStorage.setItem("clientId", clientId);
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${process.env.NEXT_PUBLIC_TEST_API}/`,
+    `ws://${process.env.NEXT_PUBLIC_API_URL}/`,
     {
       onOpen: () => {
         console.log("WebSocket connection established!");
