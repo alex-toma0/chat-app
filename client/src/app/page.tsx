@@ -28,8 +28,12 @@ export default function Page() {
           <Link href={`/room/${roomId}`}>
             <span className="link text-warning">{`${process.env.NEXT_PUBLIC_URL}/room/${roomId}`}</span>
           </Link>
-          <QRCode value={`${process.env.NEXT_PUBLIC_URL}/room/${roomId}`} />
+          <QRCode
+            value={`${process.env.NEXT_PUBLIC_URL}/room/${roomId}`}
+            size={200}
+          />
         </div>
+
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
