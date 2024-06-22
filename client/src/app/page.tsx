@@ -25,7 +25,7 @@ export default function Page() {
           <h3 className="font-bold text-lg">Your room has been created! </h3>
           <span>Share the room link and start chatting!</span>
           <Link href={`/room/${roomId}`}>
-            <span className="link text-warning">{`${location}/room/${roomId}`}</span>
+            <span className="link text-warning">{`/room/${roomId}`}</span>
           </Link>
         </div>
         <form method="dialog" className="modal-backdrop">
