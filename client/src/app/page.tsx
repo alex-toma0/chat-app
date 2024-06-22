@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
+import QRCode from "react-qr-code";
 
 export default function Page() {
   const [roomId, setRoomId] = useState("");
@@ -25,8 +26,12 @@ export default function Page() {
           <h3 className="font-bold text-lg">Your room has been created! </h3>
           <span>Share the room link and start chatting!</span>
           <Link href={`/room/${roomId}`}>
-            <span className="link text-warning">{`/room/${roomId}`}</span>
+            <span className="link text-warning">{`${process.env.NEXT_PUBLIC_URL}/room/${roomId}`}</span>
           </Link>
+          <QRCode
+            size={256}
+            value={`${process.env.NEXT_PUBLIC_URL}/room/${roomId}`}
+          />
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
