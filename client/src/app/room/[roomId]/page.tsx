@@ -16,9 +16,14 @@ export default function Page({
   };
 }) {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]); // Combined array
-  const clientId = localStorage.getItem("clientId") || uuidv4();
-  localStorage.setItem("clientId", clientId);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [clientId, setClientId] = useState("");
+  useEffect(() => {
+    const id = localStorage.getItem("clientId") || uuidv4();
+    localStorage.setItem("clientId", id);
+    setClientId(id);
+  }, []);
+
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     `wss://${process.env.NEXT_PUBLIC_API_URL}/`,
     {
@@ -30,6 +35,7 @@ export default function Page({
         clientId: clientId,
       },
       retryOnError: true,
+      shouldReconnect: () => true,
     }
   );
 

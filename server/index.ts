@@ -18,7 +18,7 @@ server.register(async function (server) {
       });
     }
     const room = connectedClients.get(roomId);
-    if (room.occupancy >= 2 && !room.clients.has(clientId)) {
+    if (room.occupancy >= 4 && !room.clients.has(clientId)) {
       // Reject connection if room is full, and a new client is trying to join it
       socket.send("Server message: room is full!");
       socket.close();
@@ -33,6 +33,16 @@ server.register(async function (server) {
           clientSocket.send(message.toString());
         }
       });
+    });
+    socket.on("close", () => {
+      console.log("WebSocket has closed");
+      // Removes the client from the room after websocket is closed
+      room.clients.delete(clientId);
+      room.occupancy--;
+      // If room is empty, delete the room
+      if (room.occupancy === 0 && room.clients.size === 0) {
+        connectedClients.delete(roomId);
+      }
     });
   });
 });
